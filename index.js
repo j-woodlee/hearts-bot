@@ -2,6 +2,9 @@ const prompt = require('prompt-sync')({sigint: true});
 const Card = require('./card')
 const Bot = require('./bot');
 
+// cardgames.io/hearts
+
+
 const selfHand = [];
 
 const clubs = prompt('Enter your clubs: ').split(' ');
@@ -73,10 +76,4 @@ bot.start();
 while (true) {
   const card = createCardFromInput(prompt('Enter the next card: '));
   bot.consumeCard(card);
-
-  const cardToPlay = new Card('Spades', 'Q');
-  console.log('you should play: ');
-  console.log(cardToPlay);
-
-  console.log('Trick complete');
 }
