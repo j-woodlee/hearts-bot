@@ -1,36 +1,63 @@
 const Card = require('./card');
-
-class HeartsBot { // one instance of this per game
-  constructor(playerCards, firstTrick) {
+const prompt = require('prompt-sync')({sigint: true});
+class HeartsBot {
+  constructor(playerCards) {
     this.deck =
       [
-        new Card('Spades', 2), new Card('Spades', 3), new Card('Spades', 4), new Card('Spades', 5),
+        new Card('Spades', '2'), new Card('Spades', 3), new Card('Spades', 4), new Card('Spades', 5),
         new Card('Spades', 6), new Card('Spades', 7), new Card('Spades', 8), new Card('Spades', 9),
-        new Card('Spades', 10), new Card('Spades', 'J'), new Card('Spades', Q), new Card('Spades', K),
-        new Card('Spades', A), new Card('Spades', 15), new Card('Spades', 16),
+        new Card('Spades', 10), new Card('Spades', 'J'), new Card('Spades', 'Q'), new Card('Spades', 'K'),
+        new Card('Spades', 'A'), new Card('Spades', 15), new Card('Spades', 16),
 
-        new Card('Hearts', 2), new Card('Hearts', 3), new Card('Hearts', 4), new Card('Hearts', 5),
+        new Card('Hearts', '2'), new Card('Hearts', 3), new Card('Hearts', 4), new Card('Hearts', 5),
         new Card('Hearts', 6), new Card('Hearts', 7), new Card('Hearts', 8), new Card('Hearts', 9),
-        new Card('Hearts', 10), new Card('Hearts', J), new Card('Hearts', Q), new Card('Hearts', K),
-        new Card('Hearts', A),
+        new Card('Hearts', 10), new Card('Hearts', 'J'), new Card('Hearts', 'Q'), new Card('Hearts', 'K'),
+        new Card('Hearts', 'A'),
 
-        new Card('Diamonds', 2), new Card('Diamonds', 3), new Card('Diamonds', 4), new Card('Diamonds', 5), new Card('Diamonds', 6),
-        new Card('Diamonds', 7), new Card('Diamonds', 8), new Card('Diamonds', 9), new Card('Diamonds', 10),
-        new Card('Diamonds', J), new Card('Diamonds', Q), new Card('Diamonds', K), new Card('Diamonds', A),
+        new Card('Diamonds', 2), new Card('Diamonds', 3), new Card('Diamonds', 4), new Card('Diamonds', 5), 
+        new Card('Diamonds', 6), new Card('Diamonds', 7), new Card('Diamonds', 8), new Card('Diamonds', 9), 
+        new Card('Diamonds', 10), new Card('Diamonds', 'J'), new Card('Diamonds', 'Q'), new Card('Diamonds', 'K'), 
+        new Card('Diamonds', 'A'),
 
-        new Card('Clubs', 2), new Card('Clubs', 3), new Card('Clubs', 4), new Card('Clubs', 5), new Card('Clubs', 6),
-        new Card('Clubs', 7), new Card('Clubs', 8), new Card('Clubs', 9), new Card('Clubs', 10),
-        new Card('Clubs', J), new Card('Clubs', Q), new Card('Clubs', K), new Card('Clubs', A),
+        new Card('Clubs', 2), new Card('Clubs', 3), new Card('Clubs', 4), new Card('Clubs', 5), 
+        new Card('Clubs', 6), new Card('Clubs', 7), new Card('Clubs', 8), new Card('Clubs', 9), 
+        new Card('Clubs', 10), new Card('Clubs', 'J'), new Card('Clubs', 'Q'), new Card('Clubs', 'K'), 
+        new Card('Clubs', 'A'),
       ];
 
     this.playerCards = playerCards;
-    this.firstTrick = firstTrick;
-    this.currentCards = [];
+  }
+
+  start() {
     this.cardsPlayed = [];
+    this.currentTrick = [];
+    let indexOfPlayerWhoStarted;
+    this.playerCards.forEach((card) => {
+      if (card.suit === 'Clubs' && card.value === '2') {
+        indexOfPlayerWhoStarted = 0; // we start the game
+        prompt('Press enter when you have played the 2 of clubs.');
+      }
+    });
+
+    if (!indexOfPlayerWhoStarted) {
+      playerWhoStarted = prompt('Which player played the 2 of clubs? 2(left), 3(across), 4(right)? ');
+      indexOfPlayerWhoStarted = playerWhoStarted - 1;
+    }
+
+    this.currentLeader = indexOfPlayerWhoStarted;
+    this.consumeCard(new Card('Clubs', '2'));
+  }
+
+  consumeCard(card) {
+    this.cardsPlayed.push(card);
+    console.log('consumed: ' + card.value + card.suit);
+  }
+
+  isMyTurn() {
+    // position 0 of the current trick is the user's position
   }
 
   /*
-
     cardsPlayed: Array of 52 cards, fills up as the hand goes on
     table: array of 3, position zero is lead, the rest is sequential
     myLead: true or false
@@ -97,7 +124,7 @@ class HeartsBot { // one instance of this per game
 
   // return highest card of each suit remaining in the game, 0=H, 1=Diamonds, 2=C, 3=S
   getHighestOfEachSuit = (cardsPlayed) => {
-    const highestOfEachSuit = [new Card('H', A), new Card('Diamonds', A), new Card('Clubs', A), new Card('S', 16)];
+    const highestOfEachSuit = [new Card('H', 'A'), new Card('Diamonds', 'A'), new Card('Clubs', 'A'), new Card('S', 16)];
 
     // cards played is sorted
     for (let i = cardsPlayed.length; i >= 0; i--) {

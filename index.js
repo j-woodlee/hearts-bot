@@ -8,85 +8,75 @@ const clubs = prompt('Enter your clubs: ').split(' ');
 console.log(`clubs: ${clubs}`);
 
 clubs.forEach((card) => {
+  if (card.value === '') {
+    return;
+  }
   selfHand.push(new Card('Clubs', card));
 });
 
 const diamonds = prompt('Enter your diamonds: ').split(' ');
-console.log(`clubs: ${diamonds}`);
+console.log(`diamonds: ${diamonds}`);
 
 diamonds.forEach((card) => {
+  if (card.value === '') {
+    return;
+  }
   selfHand.push(new Card('Diamonds', card));
 });
 
 const spades = prompt('Enter your spades: ').split(' ');
-console.log(`clubs: ${spades}`);
+console.log(`spades: ${spades}`);
 
 spades.forEach((card) => {
+  if (card.value === '') {
+    return;
+  }
   selfHand.push(new Card('Spades', card));
 });
 
 const hearts = prompt('Enter your hearts: ').split(' ');
-console.log(`clubs: ${hearts}`);
+console.log(`hearts: ${hearts}`);
 
 hearts.forEach((card) => {
+  if (card.value === '') {
+    return;
+  }
   selfHand.push(new Card('Hearts', card));
 });
 
-
 console.log('your hand: ');
 selfHand.forEach((card) => {
+  if (card.value === '') {
+    return;
+  }
   console.log(card);
 });
 
+const createCardFromInput = (input) => {
+  const arr = input.split('');
+  if (arr[0] === '1') {
+    // we have a 10
+    return new Card(arr[2], '10');
+  }
 
-const playerWhoStarted = prompt('Who led the 2 of clubs? (player 1(you), player 2(left), player 3(across), player 4(right))');
-const indexOfPlayerWhoStarted = playerWhoStarted - 1;
-
-const secondCardFirstTrickPrompt = prompt('Second card after 2 of clubs?').split('');
-const secondCardFirstTrick = new Card(secondCardFirstTrickPrompt[0], secondCardFirstTrickPrompt[1]);
-
-const thirdCardFirstTrickPrompt = prompt('Third card after 2 of clubs?').split('');
-const thirdCardFirstTrick = new Card(thirdCardFirstTrick[0], thirdCardFirstTrick[1]);
-
-const fourthCardFirstTrickPrompt = prompt('Fourth card after 2 of clubs?').split('');
-const fourthCardFirstTrick = new Card(fourthCardFirstTrickPrompt[0], fourthCardFirstTrickPrompt[1]);
-
-const firstTrick = [];
-
-firstTrick[indexOfPlayerWhoStarted] = new Card('Clubs', '2');
-
-// setup the first trick and the bot will do the rest
-if (indexOfPlayerWhoStarted === 0) {
-  // in this case the we started the game
-  firstTrick[1] = secondCardFirstTrick;
-  firstTrick[2] = thirdCardFirstTrick;
-  firstTrick[3] = fourthCardFirstTrick;
-} else if(indexOfPlayerWhoStarted === 1) {
-  firstTrick[2] = secondCardFirstTrick;
-  firstTrick[3] = thirdCardFirstTrick;
-  firstTrick[0] = fourthCardFirstTrick;
-} else if (indexOfPlayerWhoStarted === 2) {
-  firstTrick[3] = secondCardFirstTrick;
-  firstTrick[0] = thirdCardFirstTrick;
-  firstTrick[1] = fourthCardFirstTrick;
-} else if (indexOfPlayerWhoStarted === 3) {
-  firstTrick[0] = secondCardFirstTrick;
-  firstTrick[1] = thirdCardFirstTrick;
-  firstTrick[2] = fourthCardFirstTrick;
+  return new Card(arr[1], arr[0]);
 }
 
+// new Card(suit, value)
 // bot usage:
-// first param your hand
-// second param is the first trick
+// first param is your hand
 
-console.log(firstTrick);
+const bot = new Bot(selfHand);
 
-// while (true) {
+bot.start();
 
-//   const bot = new Bot(selfHand, firstTrick);
+while (true) {
+  const card = createCardFromInput(prompt('Enter the next card: '));
+  bot.consumeCard(card);
 
-//   bot.getBestCard();
-//   const cardToPlay = new Card('Spades', 'Q');
-//   console.log('you should play: ');
-//   console.log(cardToPlay);
-// }
+  const cardToPlay = new Card('Spades', 'Q');
+  console.log('you should play: ');
+  console.log(cardToPlay);
+
+  console.log('Trick complete');
+}

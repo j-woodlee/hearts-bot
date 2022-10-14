@@ -17,7 +17,7 @@ class Card {
     }
 
     this.suit = suit;
-    this.value = value;
+    this.value = value.toString().toUpperCase();
   }
 }
 
