@@ -26,6 +26,7 @@ class HeartsBot {
       ];
 
     this.playerCards = playerCards;
+    this.heartsBroken = false;
   }
 
   start() {
@@ -54,6 +55,10 @@ class HeartsBot {
   }
 
   consumeCard(card) {
+    if (card.suit === 'Hearts') {
+      console.log('hearts have been broken');
+      this.heartsBroken = true;
+    }
     this.addCardToTrick(card);
     this.cardsPlayed.push(card);
 
@@ -72,9 +77,6 @@ class HeartsBot {
       }
       
       this.currentLead = this.currentTrick.indexOf(highestCard);
-      if (this.currentLead === 0) {
-        console.log('You are leading');
-      }
       this.previousTricks.push(this.currentTrick);
       console.log('this.previousTricks: ');
       console.log(this.previousTricks);
@@ -84,14 +86,17 @@ class HeartsBot {
     console.log('consumed: ' + card.value + ' of ' + card.suit);
 
     if (this.isMyTurn()) {
-      
+      // console.log('this.playerCards: ');
+      // console.log(this.playerCards);
       const bestCard = this.getBestMove();
       console.log('it is your turn, the best move is: ' + bestCard.value + ' of ' + bestCard.suit);
     }
   }
 
   removeCardFromPlayerHand(card) {
-    const indexOfCard = this.playerCards.indexOf(card);
+    const indexOfCard = this.playerCards.findIndex((c) => {
+      return card.suit === c.suit && card.value === c.value;
+    });
     if (indexOfCard > - 1) {
       this.playerCards.splice(indexOfCard, 1);
     }
@@ -116,6 +121,10 @@ class HeartsBot {
   }
 
   isMyTurn() {
+    if (this.currentTrick.every(card => !card) && this.currentLead === 0 ) {
+      return true;
+    }
+    
     if (this.currentTrick[0]) {
       return false;
     }
@@ -136,10 +145,18 @@ class HeartsBot {
     const possibleMoves = this.getPossibleMoves();
     console.log('possibleMoves: ');
     console.log(possibleMoves);
-    return new Card('Spades', 'Q');
+    return possibleMoves[0];
   }
 
   getPossibleMoves() {
+    if (this.currentTrick[this.currentLead] === undefined) {
+      // we are leading
+      if (this.heartsBroken) {
+        return this.playerCards;
+      }
+      return HeartsBot.noHearts(this.playerCards);
+    }
+
     const ledSuit = this.currentTrick[this.currentLead].suit;
 
     const playerCardsOfLedSuit = [];
@@ -153,7 +170,19 @@ class HeartsBot {
       return playerCardsOfLedSuit;
     }
 
+    // we are out of the suit
     return this.playerCards;
+  }
+
+  static noHearts(cards) {
+    let cardsNoHearts = [...cards];
+    cards.forEach((card) => {
+      if (card.suit === 'Hearts') {
+        const indexOfCard = cardsNoHearts.indexOf(card);
+        cardsNoHearts.splice(indexOfCard, 1);
+      }
+    });
+    return cardsNoHearts;
   }
 
   // adds card to the current trick in the correct position
