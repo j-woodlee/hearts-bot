@@ -1,7 +1,19 @@
-const Card = require('./card');
 const prompt = require('prompt-sync')({sigint: true});
+const Card = require('./card');
+const getCardsToPass = require('./passingLogic');
+
+const createCardFromInput = (input) => {
+  const arr = input.split('');
+  if (arr[0] === '1') {
+    // we have a 10
+    return new Card(arr[2], '10');
+  }
+
+  return new Card(arr[1], arr[0]);
+}
+
 class HeartsBot {
-  constructor(playerCards) {
+  constructor(playerCards, passee) {
     this.deck =
       [
         new Card('Spades', '2'), new Card('Spades', '3'), new Card('Spades', '4'), new Card('Spades', '5'),
@@ -25,11 +37,30 @@ class HeartsBot {
         new Card('Clubs', 'A'),
       ];
 
+    this.passee = passee;
     this.playerCards = playerCards;
     this.heartsBroken = false;
   }
 
+  handlePassing() {
+    const cardsToPass = getCardsToPass(this.playerCards, this.passee);
+    this.removeCardFromPlayerHand(cardsToPass[0]);
+    this.removeCardFromPlayerHand(cardsToPass[1]);
+    this.removeCardFromPlayerHand(cardsToPass[2]);
+
+    console.log(`pass ${cardsToPass}`);
+
+    const receivedCard1 = createCardFromInput(prompt('Enter first card you received '));
+    const receivedCard2 = createCardFromInput(prompt('Enter second card you received '));
+    const receivedCard3 = createCardFromInput(prompt('Enter third card you received '));
+
+    this.playerCards.push(receivedCard1);
+    this.playerCards.push(receivedCard2);
+    this.playerCards.push(receivedCard3);
+  }
+
   start() {
+    this.handlePassing();
     this.cardsPlayed = [];
     this.currentTrick = [undefined, undefined, undefined, undefined];
     this.previousTricks = [];
