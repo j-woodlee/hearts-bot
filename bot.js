@@ -81,6 +81,11 @@ class HeartsBot {
       console.log('this.previousTricks: ');
       console.log(this.previousTricks);
       this.currentTrick = [undefined, undefined, undefined, undefined];
+      if (this.playerCards.length === 0) {
+        console.log('Hand is over!');
+        // this.scoreHand();
+        return;
+      }
     }
 
     console.log('consumed: ' + card.value + ' of ' + card.suit);
