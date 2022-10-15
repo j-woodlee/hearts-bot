@@ -4,10 +4,12 @@ const Bot = require('./bot');
 
 // cardgames.io/hearts
 
-
 const selfHand = [];
 
-const clubs = prompt('Enter your clubs: ').split(' ');
+const clubs = prompt('Enter your clubs: ').split(' ').filter((e) => {
+  return e !== '';
+});
+
 console.log(`clubs: ${clubs}`);
 
 clubs.forEach((card) => {
@@ -17,7 +19,10 @@ clubs.forEach((card) => {
   selfHand.push(new Card('Clubs', card));
 });
 
-const diamonds = prompt('Enter your diamonds: ').split(' ');
+const diamonds = prompt('Enter your diamonds: ').split(' ').filter((e) => {
+  return e !== '';
+});
+
 console.log(`diamonds: ${diamonds}`);
 
 diamonds.forEach((card) => {
@@ -27,7 +32,10 @@ diamonds.forEach((card) => {
   selfHand.push(new Card('Diamonds', card));
 });
 
-const spades = prompt('Enter your spades: ').split(' ');
+const spades = prompt('Enter your spades: ').split(' ').filter((e) => {
+  return e !== '';
+});
+
 console.log(`spades: ${spades}`);
 
 spades.forEach((card) => {
@@ -37,7 +45,10 @@ spades.forEach((card) => {
   selfHand.push(new Card('Spades', card));
 });
 
-const hearts = prompt('Enter your hearts: ').split(' ');
+const hearts = prompt('Enter your hearts: ').split(' ').filter((e) => {
+  return e !== '';
+});
+
 console.log(`hearts: ${hearts}`);
 
 hearts.forEach((card) => {
