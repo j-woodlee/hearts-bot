@@ -22,12 +22,24 @@ const getCardsToPass = (hand, passee) => {
       clubsCount++;
     }
   }
-  
-  // always pass the 2 of clubs
-  // never pass the ace of hearts, ace of clubs, or spades
-  let possibleCardsToPass = [...hand];
 
-  // filter out all spades, AC, and AH, since we don't pass those
+  // get the suits that we have 2 or less of, exclude spades
+  const twoOrLess = [];
+  if (heartsCount <= 2) {
+    twoOrLess.push('Hearts');
+  }
+  if (clubsCount <= 2) {
+    twoOrLess.push('Clubs');
+  }
+  if (diamondsCount <= 2) {
+    twoOrLess.push('Diamonds');
+  }
+  if (spadesCount <= 2) {
+    twoOrLess.push('Spades');
+  }
+
+  let possibleCardsToPass = [...hand];
+  // never pass the ace of hearts, ace of clubs, or any spades
   possibleCardsToPass = possibleCardsToPass.filter((card) => {
     if (card.value === 'A' && card.suit === 'Hearts') {
       return false;
@@ -37,11 +49,24 @@ const getCardsToPass = (hand, passee) => {
       return false;
     }
 
-    return card.suit !== 'Spades';
+    if (card.suit !== 'Spades') {
+      return false;
+    }
+
+    return true;
   });
 
+  if (heartsCount > 3) {
+    // do not pass hearts if we have more than 3 of them
+    possibleCardsToPass = possibleCardsToPass.filter(card => {
+      return card.value === '2' && card.suit === '';
+    });
+  }
+
+  
   console.log('possibleCardsToPass: ');
   console.log(possibleCardsToPass);
+
 
   // always pass the 2 of clubs
   let [twoOfClubs] = possibleCardsToPass.filter(card => {
